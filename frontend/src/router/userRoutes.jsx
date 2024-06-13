@@ -1,64 +1,23 @@
-// UserRoutes.jsx
+// userRoutes.jsx
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "../context/authContext";
-import ProtectedRoute from "./protectedRoutes";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/authentication/loginPage";
 import RegisterPage from "../pages/register/registerPage";
 import DashboardPage from "../pages/dashboard/dashboardPage";
+import AdminPage from "../pages/admin/adminPage";
 
-export default function UserRoutes() {
+import PrivateRoute from "./privateRoute";
+
+const UserRoutes = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-
-          {/* protect route all path*/}
-          <Route
-            path="/*"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-            />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <LoginPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute>
-                <LoginPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/dashboard/*"
-            element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/dashboard" element={<PrivateRoute element={<DashboardPage />} />} />
+      <Route path="/admin" element={<PrivateRoute element={<AdminPage />} />} />
+      <Route path="*" element={<Navigate to="/login" />} />
+    </Routes>
   );
-}
+};
+
+export default UserRoutes;

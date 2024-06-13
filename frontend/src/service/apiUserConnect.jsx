@@ -13,6 +13,7 @@ export const authenticateUser = async (username, password) => {
       password,
     });
     const { token, role } = response.data;
+    sessionStorage.setItem('token', token);
     // If token is present, return token and role
     if (token) {
       return { token, role };
