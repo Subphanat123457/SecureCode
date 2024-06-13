@@ -1,5 +1,5 @@
 // authContext.js
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
@@ -8,16 +8,31 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(sessionStorage.getItem('token'));
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const savedToken = sessionStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
 
   const login = (token) => {
-    setToken(token);
-    sessionStorage.setItem('token', token);
+    try {
+      setToken(token);
+      sessionStorage.setItem('token', token);
+    } catch (error) {
+      console.error('Failed to save token', error);
+    }
   };
 
   const logout = () => {
-    setToken(null);
-    sessionStorage.removeItem('token');
+    try {
+      setToken(null);
+      sessionStorage.removeItem('token');
+    } catch (error) {
+      console.error('Failed to remove token', error);
+    }
   };
 
   const isAuthenticated = () => {

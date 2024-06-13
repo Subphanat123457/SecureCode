@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextFieldInput from "../../components/TextField/textFieldInput";
 import ButtonComponent from "../../components/button/button";
 import { useNavigate } from "react-router-dom";
@@ -24,35 +24,43 @@ export default function LoginPage() {
     setPassword(e.target.value);
   };
 
-// Use `safeSetUser` instead of `setUser` directly
-const onClickLogin = async (e) => {
-  e.preventDefault();
-  try {
-    const { token } = await authenticateUser(username, password);
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
     if (token) {
-      sessionStorage.setItem("token", token);
-      Swal.fire({
-        title: "Login Success!",
-        text: "You clicked the button!",
-        icon: "success",
-      });
       navigate("/dashboard");
-    } else {
+    }
+
+  }, [navigate]);
+
+  // Use `safeSetUser` instead of `setUser` directly
+  const onClickLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const { token } = await authenticateUser(username, password);
+      if (token) {
+        sessionStorage.setItem("token", token);
+        Swal.fire({
+          title: "Login Success!",
+          text: "You clicked the button!",
+          icon: "success",
+        });
+        navigate("/dashboard");
+      } else {
+        Swal.fire({
+          title: "Login Failed",
+          text: "Invalid username or password",
+          icon: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
       Swal.fire({
-        title: "Login Failed",
-        text: "Invalid username or password",
+        title: "Login Error",
+        text: "An error occurred during login",
         icon: "error",
       });
     }
-  } catch (error) {
-    console.error("Error during login:", error);
-    Swal.fire({
-      title: "Login Error",
-      text: "An error occurred during login",
-      icon: "error",
-    });
-  }
-};
+  };
 
   // Handle register button click
   const onClickRegister = () => {
@@ -72,7 +80,7 @@ const onClickLogin = async (e) => {
       >
         <CardContent>
           <Typography variant="h5" component="div" gutterBottom>
-            Login Page
+            SING IN
           </Typography>
           <TextFieldInput
             id="username"
@@ -88,9 +96,13 @@ const onClickLogin = async (e) => {
             label={"Password"}
             type="password"
           />
-          <ButtonComponent label="Login" onClick={onClickLogin} />
+          {/* forgot password? */}
+          <div style={{ textAlign: "right", fontSize: "14px" }}>
+            <a href="/forgot-password">Forgot password?</a>
+          </div>
+         <ButtonComponent label="LOGIN" onClick={onClickLogin} />
           <br />
-          <ButtonComponent label="Register" onClick={onClickRegister} />
+          <ButtonComponent label="REGISTER" onClick={onClickRegister} />
         </CardContent>
       </Card>
     </div>
