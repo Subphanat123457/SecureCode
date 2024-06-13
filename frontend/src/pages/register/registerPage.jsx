@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextFieldInput from "../../components/TextField/textFieldInput";
 import { useNavigate } from "react-router-dom";
 import ButtonComponent from "../../components/button/button";
@@ -28,8 +28,15 @@ export default function RegisterPage() {
         setPassword1(e.target.value);
     }
 
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+        if (token) {
+          navigate("/dashboard");
+        }
+      }, [navigate]);
+
     const onClickLogin = async () => {
-        if (password !== password1) {
+        if (password !== password1 || password === "" || password1 === "") {
             Swal.fire({
                 title: "Error!",
                 text: "Password and Confirm Password do not match",

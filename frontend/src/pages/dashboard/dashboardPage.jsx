@@ -5,7 +5,6 @@ import Swal from "sweetalert2";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import TextField from "../../components/TextField/textFieldInput";
-
 // Import API functions
 import { fetchUserData, updateUserProfile,changePassword, Logout } from "../../service/apiUserConnect"; // Import API functions
 
@@ -30,6 +29,9 @@ export default function DashboardPage() {
           setEmail(userData.email);
         })
         .catch((error) => {
+          // clear session storage and navigate to login page
+          Logout(token)
+          delete sessionStorage.token;
           console.error("Error fetching user data", error);
           Swal.fire({
             title: "Error!",
@@ -38,8 +40,6 @@ export default function DashboardPage() {
           });
           navigate("/login");
         });
-    } else {
-      navigate("/login");
     }
   }, [navigate]);
 
