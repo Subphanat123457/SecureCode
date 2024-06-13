@@ -85,3 +85,35 @@ export const fetchProtectedData = async (token) => {
     throw error;
   }
 };
+
+
+export const changePassword = async (token, oldPassword, newPassword) => {
+  try {
+    const response = await api.put('change_password/', {
+      old_password: oldPassword,
+      new_password: newPassword,
+    }, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error changing password', error);
+    throw error;
+  }
+}
+
+export const Logout = async (token) => {
+  try {
+    const response = await api.post('logout/', {}, {
+      headers: {
+        Authorization: `Token ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error during API call', error);
+    return null;
+  }
+}
