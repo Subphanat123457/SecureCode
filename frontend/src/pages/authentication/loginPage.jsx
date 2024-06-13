@@ -7,54 +7,56 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Swal from "sweetalert2";
 import { authenticateUser } from "../../service/apiUserConnect";
-import { useAuth } from "../../context/authContext";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // Handle username input change
   const onChangeUsername = (e) => {
     setUsername(e.target.value);
   };
 
+  // Handle password input change
   const onChangePassword = (e) => {
     setPassword(e.target.value);
   };
 
-  const onClickLogin = async (e) => {
-    e.preventDefault();
-    try {
-      const { token } = await authenticateUser(username, password);
-      if (token) {
-        setUser({ token });
-        sessionStorage.setItem("token", token);
-        Swal.fire({
-          title: "Login Success!",
-          text: "You clicked the button!",
-          icon: "success",
-        });
-        navigate("/dashboard");
-      } else {
-        Swal.fire({
-          title: "Login Failed",
-          text: "Invalid username or password",
-          icon: "error",
-        });
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
+// Use `safeSetUser` instead of `setUser` directly
+const onClickLogin = async (e) => {
+  e.preventDefault();
+  try {
+    const { token } = await authenticateUser(username, password);
+    if (token) {
+      sessionStorage.setItem("token", token);
       Swal.fire({
-        title: "Login Error",
-        text: "An error occurred during login",
+        title: "Login Success!",
+        text: "You clicked the button!",
+        icon: "success",
+      });
+      navigate("/dashboard");
+    } else {
+      Swal.fire({
+        title: "Login Failed",
+        text: "Invalid username or password",
         icon: "error",
       });
     }
-  };
+  } catch (error) {
+    console.error("Error during login:", error);
+    Swal.fire({
+      title: "Login Error",
+      text: "An error occurred during login",
+      icon: "error",
+    });
+  }
+};
 
+  // Handle register button click
   const onClickRegister = () => {
-    navigate("/register");
+    navigate("/register"); // Navigate to register page
   };
 
   return (
